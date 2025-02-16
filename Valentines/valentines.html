@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Valentine's Day</title>
+
+  <style>
+    .gradient-background {
+      background: rgb(255, 208, 229);
+      background: linear-gradient(180deg, rgba(255, 208, 229, 1) 0%, rgba(255, 232, 242, 1) 36%, rgba(255, 255, 255, 1) 100%);
+    }
+
+    .bounce2 {
+      animation: bounce2 2s ease infinite;
+    }
+
+    @keyframes bounce2 {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+      }
+      40% {
+        transform: translateY(-20px);
+      }
+      60% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .moving-button {
+  position: relative; 
+  transition: transform 0.3s ease-in-out, width 0.2s ease-in-out; /* Smooth width change */
+  white-space: nowrap; /* Prevent text wrapping */
+  padding: 10px 15px; /* Add padding for better fit */
+  min-width: 75px; /* Minimum width */
+      transition: transform 0.3s ease-in-out; /* Smooth movement */
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .message-box {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      margin-top: 20px;
+      width: 80%;
+      max-width: 500px;
+    }
+  </style>
+</head>
+<body class="gradient-background">
+  <div class="flex items-center justify-center h-screen relative flex-col">
+    <div class="flex flex-col items-center p-4">
+      <img id="imageDisplay" src="./images/image1.gif" alt="Cute kitten with flowers" class="rounded-md h-[300px]" style="object-fit: cover;" />
+      <h2 id="valentineQuestion" class="text-4xl font-bold italic text-[#bd1e59] my-4">Will you be my Valentine?</h2>
+      <div class="flex gap-10 pt-[20px] items-center relative">
+        <button id="yesButton"
+          class="bounce2 inline-flex items-center justify-center whitespace-nowrap rounded-md text-[20px] font-medium disabled:pointer-events-none disabled:opacity-50 hover:bg-green-400 min-h-12 min-w-[75px] px-4 py-2 bg-green-500 text-white transition">
+          Yes
+        </button>
+        <button id="noButton"
+          class="moving-button inline-flex items-center justify-center whitespace-nowrap rounded-md text-[20px] font-medium transition disabled:pointer-events-none disabled:opacity-50 hover:bg-red-700 h-12 min-w-[75px] w-auto px-4 py-2 bg-red-500 text-white">
+          No
+        </button>
+      </div>
+    </div>
+
+    <!-- Hidden message box that appears when "Yes" is clicked -->
+    <div id="messageBox" class="message-box hidden">
+      <h3 class="text-2xl font-bold text-[#bd1e59]">A Special Message for You ❤️</h3>
+      <p class="text-lg text-gray-700 mt-2" id="customMessage">
+        <!-- Write your message here -->
+      </p>
+    </div>
+  </div>
+
+  <script type="module">
+    import confetti from 'https://cdn.skypack.dev/canvas-confetti';
+    
+    const yesButton = document.getElementById('yesButton');
+    const noButton = document.getElementById('noButton');
+    const imageDisplay = document.getElementById('imageDisplay');
+    const valentineQuestion = document.getElementById('valentineQuestion');
+    const messageBox = document.getElementById('messageBox');
+    const customMessage = document.getElementById('customMessage');
+
+    let noClickCount = 0;
+    let buttonHeight = 48; // Starting height in pixels
+    let buttonWidth = 80;
+    let fontSize = 20; // Starting font size in pixels
+    let firstClick = true; // Track if it's the first button click
+    let currentX = 0; // Track No button's X position
+    let currentY = 0; // Track No button's Y position
+
+    const imagePaths = [
+      "./images/image1.gif",
+      "./images/yes.gif",
+      "./images/image2.gif",
+      "./images/image3.gif",
+      "./images/image4.gif",
+      "./images/image5.gif",
+      "./images/image6.gif",
+      "./images/image7.gif",
+      "./images/image8.gif",
+      "./images/image9.gif",
+      "./images/image10.gif",
+      "./images/image11.gif",
+      "./images/image12.gif",
+      "./images/image13.gif",
+      "./images/image14.gif",
+      "./images/image15.gif",
+      "./images/image16.gif",
+      "./images/image17.png"
+    ];
+
+    // Move "No" button by a small amount instead of random jumps
+    function moveNoButton() {
+      const moveAmount = 75; // Smaller movement range
+      const directionX = Math.random() < 0.5 ? -1 : 1; // Random left or right
+      const directionY = Math.random() < 0.5 ? -1 : 1; // Random up or down
+
+      currentX += directionX * moveAmount;
+      currentY += directionY * moveAmount;
+
+      // Prevent moving too far
+      const maxMove = 175; // Max movement in any direction
+      currentX = Math.max(-maxMove, Math.min(maxMove, currentX));
+      currentY = Math.max(-maxMove, Math.min(maxMove, currentY));
+
+      noButton.style.transform = `translate(${currentX}px, ${currentY}px)`;
+    }
+
+    noButton.addEventListener('click', function() {
+  if (firstClick) firstClick = false; // Disable firstClick tracking after first button click
+
+  if (noClickCount < 16) {
+    noClickCount++;
+    imageDisplay.src = imagePaths[noClickCount+1];
+    
+    buttonHeight += 35;
+    buttonWidth += 35;
+    fontSize += 25;
+    
+    yesButton.style.height = `${buttonHeight}px`; 
+    yesButton.style.width = `${buttonWidth}px`;
+    yesButton.style.fontSize = `${fontSize}px`; 
+    
+    if (noClickCount < 17) {
+      const noTexts = [
+        "No", "Are you sure?", "Please", "Don't do this to me :(", 
+        "You're breaking my heart", "I'm gonna cry...", "You wanna kill me?",
+        "Please you're really pretty?", "Tab lehhh?", "One last chance",
+        "Okay fine :(", "Ba7ebek", "Awy Awy", "Most beautiful", 
+        "Girl in", "The whole", "world"
+      ];
+      noButton.textContent = noTexts[noClickCount];
+
+      // 🔹 Automatically adjust width to fit text
+      noButton.style.minWidth = `${noButton.scrollWidth + 20}px`; 
+    }
+  }
+
+  moveNoButton();
+});
+
+
+    yesButton.addEventListener('click', () => {
+  if (firstClick) {
+    valentineQuestion.textContent = "Damn, it was that easy?";
+    firstClick = false;
+    
+    setTimeout(() => {
+      imageDisplay.src = './images/yes.gif';
+      valentineQuestion.textContent = "Yayyy!! :3";
+      yesButton.style.display = 'none';
+      noButton.style.display = 'none';
+
+      // Delay confetti slightly for better effect
+      setTimeout(() => confetti(), 500);
+
+      // Show the second question
+      setTimeout(() => {
+        valentineQuestion.textContent = "Would you like to be my girlfriend? 🥹❤️";
+        yesButton.style.display = 'inline-flex';
+        noButton.style.display = 'inline-flex';
+        yesButton.textContent = "Yes!";
+        noButton.textContent = "No 😢";
+        yesButton.style.fontSize = "24px";
+        noButton.style.fontSize = "20px";
+        yesButton.style.width = "100px";
+        noButton.style.width = "80px";
+
+        // Reset "No" button movement so it can move again
+        noClickCount = 0;
+        currentX = 0;
+        currentY = 0;
+        noButton.style.transform = "translate(0, 0)";
+
+      }, 2000); // Delay for 2 seconds
+
+    }, 1500);
+  } else {
+    // If she clicks "Yes" again to be your girlfriend ❤️
+    imageDisplay.src = './images/yes.gif'; 
+    valentineQuestion.textContent = "OMG REALLY?! I'm the happiest person alive! ❤️";
+    yesButton.style.display = 'none';
+    noButton.style.display = 'none';
+    confetti();
+
+    // Show the final message
+    messageBox.classList.remove('hidden');
+    customMessage.textContent = "You're officially mine! 🥰 I promise to make you the happiest person ever! I Love you forever! ❤️";
+  }
+});
+
+  </script>  
+</body>
+</html>
